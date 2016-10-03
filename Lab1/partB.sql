@@ -22,14 +22,35 @@ GROUP BY W.did
 ORDER BY W.did;
 
 -- B.3
-SELECT E.ename as ename_for_B_3
-FROM Emp E
-INNER JOIN Works W
-ON E.eid = W.eid
-INNER JOIN Dept D
-ON W.did = D.did
-GROUP BY E.ename, E.eid, E.salary
-HAVING E.salary > sum(D.budget);
+SELECT ename0 AS ename_for_B_3
+FROM
+(
+    (
+        SELECT DISTINCT E.eid AS eid0, E.ename AS ename0
+        FROM 
+        (
+            Emp E
+            INNER JOIN Works W
+            ON E.eid = W.eid
+            INNER JOIN Dept D
+            ON W.did = D.did
+        )
+        WHERE E.salary > D.budget
+    )
+    MINUS
+    (
+        SELECT DISTINCT E.eid AS eid0, E.ename AS ename0
+        FROM
+        (
+            Emp E
+            INNER JOIN Works W
+            ON E.eid = W.eid
+            INNER JOIN Dept D
+            ON W.did = D.did
+        )
+        WHERE E.salary <= D.budget
+    )
+)
 
 -- B.4
 SELECT DISTINCT managerid1 AS managerid_for_B_4
