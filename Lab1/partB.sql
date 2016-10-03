@@ -50,7 +50,7 @@ FROM
         )
         WHERE E.salary <= D.budget
     )
-)
+);
 
 -- B.4
 SELECT DISTINCT managerid1 AS managerid_for_B_4
