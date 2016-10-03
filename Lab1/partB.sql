@@ -27,4 +27,43 @@ HAVING E.salary > sum(D.budget);
 -- B.4
 SELECT D.managerid
 FROM Dept D
-WHERE D.budget > 50000000;
+GROUP BY D.managerid
+HAVING count(D.did) = 1 AND sum(D.budget) > 50000000;
+
+-- B.5
+SELECT E.ename
+FROM Emp E
+INNER JOIN 
+    (
+        SELECT DISTINCT managerid1
+        FROM
+        (
+            ( -- name list
+                SELECT D1.managerid AS managerid1, sum(D1.budget) as budget1
+                FROM Dept D1
+                GROUP BY D1.managerid
+            )
+            MINUS
+            ( -- except largest one
+                SELECT DISTINCT managerid3 AS managerid1, budget3 as budget1
+                FROM
+                (
+                    (
+                        SELECT D2.managerid AS managerid2, sum(D2.budget) AS budget2
+                        FROM Dept D2
+                        GROUP BY D2.managerid
+                    )
+                    INNER JOIN
+                    (
+                        SELECT D3.managerid AS managerid3, sum(D3.budget) AS budget3
+                        FROM Dept D3
+                        GROUP BY D3.managerid
+                    )
+                    ON budget2 > budget3
+                )
+            )
+        )
+    )
+ON E.eid = managerid1;
+
+-- B.6
